@@ -6,7 +6,8 @@ find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 add_executable(lab3_sem3 main.cpp
-        )
+        include/data_structures/BinaryTree.h
+)
 
 target_link_libraries(lab3_sem3
         PRIVATE

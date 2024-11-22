@@ -1,10 +1,6 @@
-//
-// Created by dimak on 15.11.2024.
-//
-
 #ifndef LAB3_SEM3_ISORTEDSEQUENCE_H
 #define LAB3_SEM3_ISORTEDSEQUENCE_H
-
+#include "C:\Users\dimak\CLionProjects\lab3_sem3\include\sequence\ArraySequence.h"
 #include <iostream>
 #include <stdexcept>
 #include <vector>

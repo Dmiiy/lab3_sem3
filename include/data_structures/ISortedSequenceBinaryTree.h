@@ -1,5 +1,3 @@
-// include/data_structures/ISortedSequenceBinaryTree.h
-
 #ifndef LAB3_SEM3_ISORTEDSEQUENCEBINARYTREE_H
 #define LAB3_SEM3_ISORTEDSEQUENCEBINARYTREE_H
 
@@ -28,7 +26,7 @@ public:
     }
 
     // Get element by index (in-order traversal)
-    TElement Get(int index) const override {
+    TElement Get(int index)const override {
         if (index < 0 || index >= tree.getSize()) {
             throw std::out_of_range("Index out of range");
         }
@@ -36,6 +34,7 @@ public:
         std::advance(it, index);
         return *it;
     }
+
 
     // Add element with automatic sorting
     void Add(const TElement& element) override {
@@ -47,16 +46,18 @@ public:
         if (IsEmpty()) {
             throw std::out_of_range("Sequence is empty");
         }
-        return tree.minimum()->value;
+        return tree.getMin();
     }
+
 
     // Get the last element
     TElement GetLast() const override {
         if (IsEmpty()) {
             throw std::out_of_range("Sequence is empty");
         }
-        return tree.maximum()->value;
+        return tree.getMax();
     }
+
 
     // Get the index of an element (or -1 if not found)
     int IndexOf(const TElement& element) const override {
@@ -82,6 +83,7 @@ public:
         }
         return subsequence;
     }
+
 
     // Iterator class
     class Iterator {

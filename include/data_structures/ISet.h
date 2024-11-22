@@ -1,11 +1,7 @@
-//
-// Created by dimak on 17.11.2024.
-//
-
 #ifndef LAB3_SEM3_ISET_H
 #define LAB3_SEM3_ISET_H
 #include <string>
-
+#include "C:\Users\dimak\CLionProjects\lab3_sem3\include\sequence\ArraySequence.h"
 template <typename T>
 class ISet {
 public:
@@ -21,7 +17,6 @@ public:
     virtual bool subSet(const ISet<T> &set) const = 0;
     virtual bool equal(const ISet<T> &set) const = 0;
     virtual std::string toString() const = 0;
-    virtual void printAsTree() = 0;
 };
 
 #endif //LAB3_SEM3_ISET_H

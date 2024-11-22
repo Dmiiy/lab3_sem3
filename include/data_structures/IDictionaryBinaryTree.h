@@ -26,6 +26,12 @@ class IDictionaryBinaryTree : public IDictionary<TKey, TValue> {
         bool operator==(const KeyValuePair &other) const {
             return key == other.key;
         }
+        bool operator<=(const KeyValuePair &other) const {
+            return key <= other.key;
+        }
+        bool operator>=(const KeyValuePair &other) const {
+            return key >= other.key;
+        }
     };
 
     BinaryTree<KeyValuePair> tree;
@@ -40,7 +46,7 @@ public:
         if (!node) {
             throw std::out_of_range("Key not found");
         }
-        return node->value;
+        return node->value.value;
     }
 
     // Check if key exists
@@ -67,7 +73,7 @@ public:
     ArraySequence<TKey> GetKeys() const override {
         ArraySequence<TKey> keys;
         for (const auto &pair : tree) {
-            keys.Append(pair.key);
+            keys.append(pair.key);
         }
         return keys;
     }
@@ -76,10 +82,11 @@ public:
     ArraySequence<TValue> GetValues() const override {
         ArraySequence<TValue> values;
         for (const auto &pair : tree) {
-            values.Append(pair.value);
+            values.append(pair.value);
         }
         return values;
     }
+
 
     // Iterator class
     class Iterator {

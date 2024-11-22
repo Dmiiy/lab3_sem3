@@ -11,6 +11,7 @@ add_executable(Google_Tests tests.cpp
         smrt_ptr_tests.cpp
         array_sequence.cpp
         sorters_tests.cpp
+        data_structures_tests.cpp
 )
 target_link_libraries(Google_Tests gtest gtest_main)
 include_directories(

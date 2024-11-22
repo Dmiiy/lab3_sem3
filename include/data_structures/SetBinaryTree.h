@@ -14,6 +14,7 @@
 #include "Common.h"
 #include "ISet.h"
 
+
 template <typename T>
 class SetBinaryTree: public ISet<T> {
     BinaryTree<T> tree;  // For implementation, a binary search tree is used
@@ -21,39 +22,20 @@ public:
     // Constructors
     SetBinaryTree() = default;  // Empty set
     explicit SetBinaryTree(std::set<T> set) : tree(set) {}
-    SetBinaryTree(std::initializer_list<T> list) : tree(list) {}
-    explicit SetBinaryTree(const char *str) {
-        std::istringstream in(str);
-        T value;
-        while (in >> value) tree.insert(value);
+    SetBinaryTree(const T *items, const int size) {
+        for (int i = 0; i < size; i++)
+            insert(items[i]);
     }
-    explicit SetBinaryTree(const std::string &str) {
-        std::istringstream in(str);
-        T value;
-        while (in >> value) tree.insert(value);
-    }
-
-    // Map, reduce, where
-    SetBinaryTree<T> map(T f(T)) {
-        SetBinaryTree<T> res;
-        for (T x : tree) {
-            res.insert(f(x));
-        }
-        return res;
-    }
-
-    SetBinaryTree<T> where(bool h(T)) {
-        SetBinaryTree<T> res;
-        for (T x : tree)
-            if (h(x)) {
-                res.insert(x);
-            }
-        return res;
-    }
-
-    T reduce(T f(T, T)) {
-        return tree.reduce(f);
-    }
+//    explicit SetBinaryTree(const char *str) {
+//        std::istringstream in(str);
+//        T value;
+//        while (in >> value) tree.insert(value);
+//    }
+//    explicit SetBinaryTree(const std::string &str) {
+//        std::istringstream in(str);
+//        T value;
+//        while (in >> value) tree.insert(value);
+//    }
 
     // Size of the set
     int size() const override {
@@ -77,7 +59,7 @@ public:
     }
 
     // Union of sets
-    ISet<T>* setUnion(ISet<T> &s) override {
+    ISet<T>* setUnion(ISet<T> &s)  override{
         auto* result = new SetBinaryTree<T>();
         for (T x : tree) result->insert(x);
         for (T x : dynamic_cast<SetBinaryTree<T>&>(s)) result->insert(x);
@@ -96,7 +78,7 @@ public:
     }
 
     // Difference of sets
-    ISet<T>* difference(ISet<T> &s) override {
+    ISet<T>* difference(ISet<T> &s) override{
         auto* result = new SetBinaryTree<T>();
         for (T x : tree) {
             if (!s.find(x)) {
@@ -107,7 +89,7 @@ public:
     }
 
     // Is the current set a subset of another?
-    bool subSet(const ISet<T> &set) const override {
+    bool subSet(const ISet<T> &set) const {
         const auto& otherSet = dynamic_cast<const SetBinaryTree<T>&>(set);
         for (T x : tree) {
             if (!otherSet.find(x)) return false;
@@ -122,19 +104,17 @@ public:
     }
 
     // Save to string
-    std::string toString() const override {
-        std::vector<T> elements;
+    std::string toString() const {
+        // Сохраним элементы как вектор
+        vector<T> elements;
         for (T x : tree) elements.push_back(x);
-        std::sort(elements.begin(), elements.end());
-        std::stringstream ss;
+        // Отсортируем вектор по неубыванию
+        sort(elements.begin(), elements.end());
+        // Напечатаем отсортированные элементы в строку
+        stringstream ss;
         for (T x : elements) ss << x << " ";
         return trim_copy(ss.str());
     }
-
-    void printAsTree() override {
-        tree.printAsTree();
-    }
-
     struct Iterator {
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
