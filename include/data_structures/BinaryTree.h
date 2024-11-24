@@ -10,7 +10,7 @@
 #include <sstream>
 
 #include "Common.h"
-#include "C:\Users\dimak\CLionProjects\lab3_sem3\include\sequence\ArraySequence.h"
+#include "../sequence/ArraySequence.h"
 
 using namespace std;
 
@@ -141,11 +141,10 @@ public:
     // Constructors and destructor
     BinaryTree() = default;
 
-    BinaryTree(const T *items, const int size) {
-        for (int i = 0; i < size; i++)
-            insert(items[i]);
+    explicit BinaryTree(const ArraySequence<T> &seq) {
+        for (int i = 0; i < seq.getLength(); i++)
+            insert(seq.get(i));
     }
-
     explicit BinaryTree(const std::set<T> &set) {
         for (T x : set)
             insert(x);
@@ -302,25 +301,12 @@ public:
         }
     };
 
-    struct ThreadVector : public Operation {
-        ArraySequence<Node *> path;
-        void apply(Node *n) override {
-            path.append(n);
-        }
-    };
-
     Node *thread() {
         first = nullptr;
         Thread td;
         NLR(root, td);
         first = td.first;
         return first;
-    }
-
-    vector<Node *> threadAsVector() {
-        ThreadVector td;
-        NLR(root, td);
-        return td.path;
     }
 
     Node *thread(const char *order) {
@@ -367,7 +353,6 @@ public:
         };
 
     private:
-        // Node Left Right - Корень Левое Правое
         void LNR(Node *node) {
             if (node == nullptr) return;
             if (node->left != nullptr) LNR(node->left);

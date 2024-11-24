@@ -9,7 +9,7 @@
 
 template <typename TElement>
 class ISortedSequenceBinaryTree : public ISortedSequence<TElement> {
-    BinaryTree<TElement> tree;  // Binary tree container
+    BinaryTree<TElement> tree;
 
 public:
     // Constructor
@@ -35,7 +35,6 @@ public:
         return *it;
     }
 
-
     // Add element with automatic sorting
     void Add(const TElement& element) override {
         tree.insert(element);
@@ -48,7 +47,6 @@ public:
         }
         return tree.getMin();
     }
-
 
     // Get the last element
     TElement GetLast() const override {
@@ -84,8 +82,6 @@ public:
         return subsequence;
     }
 
-
-    // Iterator class
     class Iterator {
         typename BinaryTree<TElement>::Iterator iterator;
     public:

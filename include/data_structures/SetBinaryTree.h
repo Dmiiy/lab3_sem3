@@ -1,5 +1,3 @@
-// include/data_structures/SetBinaryTree.h
-
 #ifndef LAB3_SEM3_SETBINARYTREE_H
 #define LAB3_SEM3_SETBINARYTREE_H
 
@@ -13,29 +11,22 @@
 #include "BinaryTree.h"
 #include "Common.h"
 #include "ISet.h"
+#include "../sequence/ArraySequence.h"
 
 
 template <typename T>
 class SetBinaryTree: public ISet<T> {
-    BinaryTree<T> tree;  // For implementation, a binary search tree is used
+private:
+    BinaryTree<T> tree;
 public:
     // Constructors
     SetBinaryTree() = default;  // Empty set
-    explicit SetBinaryTree(std::set<T> set) : tree(set) {}
-    SetBinaryTree(const T *items, const int size) {
-        for (int i = 0; i < size; i++)
-            insert(items[i]);
+    explicit SetBinaryTree(const ArraySequence<T>& sequence) {
+        for (int i = 0; i < sequence.getLength(); i++)
+            insert(sequence.get(i));
     }
-//    explicit SetBinaryTree(const char *str) {
-//        std::istringstream in(str);
-//        T value;
-//        while (in >> value) tree.insert(value);
-//    }
-//    explicit SetBinaryTree(const std::string &str) {
-//        std::istringstream in(str);
-//        T value;
-//        while (in >> value) tree.insert(value);
-//    }
+    SetBinaryTree(const SetBinaryTree<T>& set) : tree(set.tree) {}
+    explicit SetBinaryTree(std::set<T> set) : tree(set) {}
 
     // Size of the set
     int size() const override {
@@ -103,18 +94,6 @@ public:
         return this->subSet(otherSet) && otherSet.subSet(*this);
     }
 
-    // Save to string
-    std::string toString() const {
-        // Сохраним элементы как вектор
-        vector<T> elements;
-        for (T x : tree) elements.push_back(x);
-        // Отсортируем вектор по неубыванию
-        sort(elements.begin(), elements.end());
-        // Напечатаем отсортированные элементы в строку
-        stringstream ss;
-        for (T x : elements) ss << x << " ";
-        return trim_copy(ss.str());
-    }
     struct Iterator {
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;

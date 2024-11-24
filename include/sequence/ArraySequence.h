@@ -11,6 +11,7 @@ private:
 
 public:
     // Создание объекта
+
     ArraySequence(T *items, int count) : data(items, count) {}
 
     ArraySequence() : data() {}

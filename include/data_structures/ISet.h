@@ -1,7 +1,11 @@
 #ifndef LAB3_SEM3_ISET_H
 #define LAB3_SEM3_ISET_H
-#include <string>
-#include "C:\Users\dimak\CLionProjects\lab3_sem3\include\sequence\ArraySequence.h"
+
+#include <iostream>
+#include <stdexcept>
+
+#include "../sequence/ArraySequence.h"
+
 template <typename T>
 class ISet {
 public:
@@ -16,7 +20,6 @@ public:
     virtual ISet<T>* difference(ISet<T> &s) = 0;
     virtual bool subSet(const ISet<T> &set) const = 0;
     virtual bool equal(const ISet<T> &set) const = 0;
-    virtual std::string toString() const = 0;
 };
 
 #endif //LAB3_SEM3_ISET_H

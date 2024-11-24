@@ -1,5 +1,3 @@
-// include/data_structures/IDictionaryBinaryTree.h
-
 #ifndef LAB3_SEM3_IDICTIONARYBINARYTREE_H
 #define LAB3_SEM3_IDICTIONARYBINARYTREE_H
 
@@ -49,6 +47,22 @@ public:
         return node->value.value;
     }
 
+    // Get value by key (pointer)
+    TValue& GetReference(const TKey &key) {
+        auto node = tree.find(KeyValuePair(key, TValue()));
+        if (!node) {
+            throw std::out_of_range("Key not found");
+        }
+        return node->value.value;
+    }
+
+    const TValue& GetReference(const TKey &key) const {
+        auto node = tree.find(KeyValuePair(key, TValue()));
+        if (!node) {
+            throw std::out_of_range("Key not found");
+        }
+        return node->value.value;
+    }
     // Check if key exists
     bool ContainsKey(const TKey &key) const override {
         return tree.find(KeyValuePair(key, TValue())) != nullptr;
@@ -56,11 +70,17 @@ public:
 
     // Add key-value pair
     void Add(const TKey &key, const TValue &value) override {
+        if (ContainsKey(key)) {
+            throw std::invalid_argument("Key already exists");
+        }
         tree.insert(KeyValuePair(key, value));
     }
 
     // Remove key-value pair
     void Remove(const TKey &key) override {
+        if (!ContainsKey(key)) {
+            throw std::out_of_range("Key not found");
+        }
         tree.remove(KeyValuePair(key, TValue()));
     }
 
@@ -87,8 +107,6 @@ public:
         return values;
     }
 
-
-    // Iterator class
     class Iterator {
         typename BinaryTree<KeyValuePair>::Iterator iterator;
     public:
