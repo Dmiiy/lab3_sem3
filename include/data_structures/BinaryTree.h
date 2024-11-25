@@ -328,12 +328,10 @@ public:
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
         using value_type = T;
-        using pointer = T *;
-        using reference = T &;
+        using pointer = T*;
+        using reference = T&;
 
-        explicit Iterator(Node *node) : current(node) {
-
-        }
+        explicit Iterator(Node* node) : current(node) {}
 
         reference operator*() const {
             return current->value;
@@ -343,8 +341,7 @@ public:
             return &current->value;
         }
 
-        Iterator &operator++() {
-            // Переходим к следующему элементу в порядке прошивки
+        Iterator& operator++() {
             current = current->next;
             return *this;
         }
@@ -355,22 +352,24 @@ public:
             return tmp;
         }
 
-        friend bool operator==(const Iterator &a, const Iterator &b) {
+        friend bool operator==(const Iterator& a, const Iterator& b) {
             return a.current == b.current;
         }
 
-        friend bool operator!=(const Iterator &a, const Iterator &b) {
-            return a.current != b.current;
+        friend bool operator!=(const Iterator& a, const Iterator& b) {
+            return !(a == b);
         }
 
     private:
-        Node *current;
+        Node* current;
     };
 
-    Iterator begin() const {
-        return Iterator(root);
+    Iterator begin()  {
+        threadLNR();
+        return Iterator(first);
     }
-    Iterator end() const {
+
+    Iterator end()  {
         return Iterator(nullptr);
     }
 };

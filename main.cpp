@@ -30,7 +30,7 @@ int main() {
 
     // Тестируем прошивку дерева
     std::cout << "Threading the tree in LNR (in-order) order..." << std::endl;
-    tree.threadLNR();
+    tree.threadNLR();
 
     // Печатаем прошитое дерево
     std::cout << "Threaded tree values (LNR): ";
@@ -43,14 +43,14 @@ int main() {
 
     // Проверяем, что дерево всё ещё корректно
     std::cout << "Threading the tree after deletion..." << std::endl;
-    tree.threadLNR();
+    tree.threadNLR();
     std::cout << "Threaded tree values after deletion: ";
     tree.printThreaded();
 
     // Итератор тестирование
     std::cout << "Using iterator to traverse the tree:" << std::endl;
     for (auto it = tree.begin(); it != tree.end(); ++it) {
-        cout << *it << " ";
+        std::cout << *it << " ";
     }
     std::cout << std::endl;
 
