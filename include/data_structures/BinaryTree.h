@@ -101,8 +101,8 @@ private:
     }
     void LNR(Node *n, Operation &op) {
         if (n == nullptr) return;
-        op.apply(n);
         LNR(n->left, op);
+        op.apply(n);
         LNR(n->right, op);
     }
 
@@ -137,67 +137,22 @@ private:
         return balance(n);
     }
 
-public:
-    // Constructors and destructor
-    BinaryTree() = default;
-
-    explicit BinaryTree(const ArraySequence<T> &seq) {
-        for (int i = 0; i < seq.getLength(); i++)
-            insert(seq.get(i));
-    }
-    explicit BinaryTree(const std::set<T> &set) {
-        for (T x : set)
-            insert(x);
-    }
-
-    ~BinaryTree() {
-        delTree(root);
-    }
-
-    // Basic operations
-    int getSize() const { return size; }
-    Node *getRoot() { return root; }
-
-    void insert(const T &value) {
-        size++;
-        if (root)
-            root = insertTo(root, value);
-        else
-            root = new Node(value);
-    }
-
-    Node *find(const T &v) const {
-        Node *n = root;
-        while (n != nullptr) {
-            if (v == n->value) return n;
-            if (v < n->value)
-                n = n->left;
-            else
-                n = n->right;
-        }
-        return nullptr;
-    }
-
-    void remove(const T &v) {
-        root = remove(root, v);
-    }
-
-    Node *remove(Node *r, const T &v) {
+    Node *removeTo(Node *r, const T &v) {
         if (r == nullptr) return nullptr;
 
         if (v < r->value) {
-            r->left = remove(r->left, v);
+            r->left = removeTo(r->left, v);
             return balance(r);
         }
         if (v > r->value) {
-            r->right = remove(r->right, v);
+            r->right = removeTo(r->right, v);
             return balance(r);
         }
 
         assert(v == r->value);
         if (r->left && r->right) {
             r->value = minimum(r->right)->value;
-            r->right = remove(r->right, r->value);
+            r->right = removeTo(r->right, r->value);
         } else {
             Node *toDelete = r;
             if (r->left)
@@ -212,14 +167,6 @@ public:
         return balance(r);
     }
 
-    // Tree properties
-    int height() const { return root ? root->height : 0; }
-
-    int height(Node *n) {
-        if (!n) return 0;
-        return max(height(n->left), height(n->right)) + 1;
-    }
-
     Node *minimum(Node *n) const {
         if (n == nullptr) throw range_error("Empty tree");
         while (n->left) n = n->left;
@@ -230,13 +177,6 @@ public:
         if (n == nullptr) throw range_error("Empty tree");
         while (n->right) n = n->right;
         return n;
-    }
-
-    T getMin()const {
-        return minimum(root)->value;
-    }
-    T getMax()const {
-        return maximum(root)->value;
     }
 
     // Balance operations
@@ -301,22 +241,88 @@ public:
         }
     };
 
-    Node *thread() {
+public:
+    // Constructors and destructor
+    BinaryTree() = default;
+
+    explicit BinaryTree(const ArraySequence<T> &seq) {
+        for (int i = 0; i < seq.getLength(); i++)
+            insert(seq.get(i));
+    }
+    explicit BinaryTree(const std::set<T> &set) {
+        for (T x : set)
+            insert(x);
+    }
+
+    ~BinaryTree() {
+        delTree(root);
+    }
+
+    bool find(const T &v) const {
+        Node *n = root;
+        while (n != nullptr) {
+            if (v == n->value) return true;
+            if (v < n->value)
+                n = n->left;
+            else
+                n = n->right;
+        }
+        return false;
+    }
+
+    void remove(const T &v) {
+        root = removeTo(root, v);
+    }
+
+    // Basic operations
+    int getSize() const { return size; }
+    Node *getRoot() { return root; }
+
+    void insert(const T &value) {
+        size++;
+        if (root)
+            root = insertTo(root, value);
+        else
+            root = new Node(value);
+    }
+
+    // Tree properties
+    int height() const { return root ? root->height : 0; }
+
+    int height(Node *n) {
+        if (!n) return 0;
+        return max(height(n->left), height(n->right)) + 1;
+    }
+
+    T getMin()const {
+        return minimum(root)->value;
+    }
+    T getMax()const {
+        return maximum(root)->value;
+    }
+
+    void threadNLR() {
         first = nullptr;
         Thread td;
         NLR(root, td);
         first = td.first;
-        return first;
     }
-
-    Node *thread(const char *order) {
-        assert(strlen(order) == 3);
+    void threadLNR() {
         first = nullptr;
         Thread td;
-        go(root, order, td);
+        LNR(root, td);
         first = td.first;
-        return first;
     }
+
+    void printThreaded() const {
+        Node *current = first;
+        while (current) {
+            cout << current->value << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+
     // Итератор для BinaryTree
     struct Iterator {
         using iterator_category = std::forward_iterator_tag;
@@ -325,49 +331,47 @@ public:
         using pointer = T *;
         using reference = T &;
 
-        // Создаём обход и запоминаем индекс
-        explicit Iterator(Node *node, int index) : index(index), root(node) {
-            LNR(node);
+        explicit Iterator(Node *node) : current(node) {
+
         }
+
         reference operator*() const {
-            return path[index]->value;
+            return current->value;
         }
+
         pointer operator->() {
-            return path[index]->value;
+            return &current->value;
         }
+
         Iterator &operator++() {
-            index++;
-            if (index > path.size()) index = path.size();
+            // Переходим к следующему элементу в порядке прошивки
+            current = current->next;
             return *this;
         }
+
         Iterator operator++(int) {
             Iterator tmp = *this;
             ++(*this);
             return tmp;
         }
+
         friend bool operator==(const Iterator &a, const Iterator &b) {
-            return a.index == b.index && a.root == b.root;
-        };
+            return a.current == b.current;
+        }
+
         friend bool operator!=(const Iterator &a, const Iterator &b) {
-            return a.index != b.index || a.root != b.root;
-        };
+            return a.current != b.current;
+        }
 
     private:
-        void LNR(Node *node) {
-            if (node == nullptr) return;
-            if (node->left != nullptr) LNR(node->left);
-            path.push_back(node);  // Добавляем узел в путь
-            if (node->right != nullptr) LNR(node->right);
-        }
-        std::vector<Node *> path;
-        int index;
-        Node *root;
+        Node *current;
     };
+
     Iterator begin() const {
-        return Iterator(root, 0);
+        return Iterator(root);
     }
     Iterator end() const {
-        return Iterator(root, getSize());
+        return Iterator(nullptr);
     }
 };
 
