@@ -80,18 +80,17 @@ public:
     }
 
     // Is the current set a subset of another?
-    bool subSet(const ISet<T> &set) const {
-        const auto& otherSet = dynamic_cast<const SetBinaryTree<T>&>(set);
-        for (T x : tree) {
-            if (!otherSet.find(x)) return false;
+    bool subSet(const ISet<T> &set) const override {
+        if (this->size() > set.size()) return false; // Оптимизация по размеру
+        for (const T& x : tree) {
+            if (!set.find(x)) return false;
         }
         return true;
     }
 
     // Are the sets equal?
     bool equal(const ISet<T> &set) const override {
-        const auto& otherSet = dynamic_cast<const SetBinaryTree<T>&>(set);
-        return this->subSet(otherSet) && otherSet.subSet(*this);
+        return this->size() == set.size() && this->subSet(set);
     }
 
     struct Iterator {

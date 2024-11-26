@@ -16,7 +16,10 @@ using namespace std;
 
 template <typename T>
 class BinaryTree {
+    template <typename TKey, typename TValue>
+    friend class IDictionaryBinaryTree;
 private:
+
     // Forward declarations
     struct Node;
     struct Operation {
@@ -167,6 +170,18 @@ private:
         return balance(r);
     }
 
+    Node *findRef(const T &v) const {
+        Node *n = root;
+        while (n != nullptr) {
+            if (v == n->value) return n;
+            if (v < n->value)
+                n = n->left;
+            else
+                n = n->right;
+        }
+        return nullptr;
+    }
+
     Node *minimum(Node *n) const {
         if (n == nullptr) throw range_error("Empty tree");
         while (n->left) n = n->left;
@@ -313,6 +328,12 @@ public:
         LNR(root, td);
         first = td.first;
     }
+    void threadLNR() const {
+        first = nullptr;
+        Thread td;
+        LNR(root, td);
+        first = td.first;
+    }
 
     void printThreaded() const {
         Node *current = first;
@@ -324,25 +345,28 @@ public:
     }
 
     // Итератор для BinaryTree
+    // Итератор для BinaryTree с использованием обхода Морриса
     struct Iterator {
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
         using value_type = T;
-        using pointer = T*;
-        using reference = T&;
+        using pointer = T *;
+        using reference = T &;
 
-        explicit Iterator(Node* node) : current(node) {}
+        explicit Iterator(Node *node) : current(node), root(node) {
+            moveToLeftmost();
+        }
 
         reference operator*() const {
             return current->value;
         }
 
         pointer operator->() {
-            return &current->value;
+            return &(current->value);
         }
 
-        Iterator& operator++() {
-            current = current->next;
+        Iterator &operator++() {
+            moveToNext();
             return *this;
         }
 
@@ -352,26 +376,58 @@ public:
             return tmp;
         }
 
-        friend bool operator==(const Iterator& a, const Iterator& b) {
+        friend bool operator==(const Iterator &a, const Iterator &b) {
             return a.current == b.current;
         }
 
-        friend bool operator!=(const Iterator& a, const Iterator& b) {
-            return !(a == b);
+        friend bool operator!=(const Iterator &a, const Iterator &b) {
+            return a.current != b.current;
         }
 
     private:
-        Node* current;
-    };
+        Node *current; // Текущий узел
+        Node *root;    // Корень дерева
 
-    Iterator begin()  {
-        threadLNR();
-        return Iterator(first);
+        void moveToLeftmost() {
+            while (current && current->left) {
+                current = current->left;
+            }
+        }
+
+        void moveToNext() {
+            if (!current) return;
+
+            if (current->right) {
+                // Идем в правое поддерево, затем к самому левому узлу
+                current = current->right;
+                while (current->left) {
+                    current = current->left;
+                }
+            } else {
+                // Ищем ближайшего родителя, у которого текущий узел — левый потомок
+                Node *successor = nullptr;
+                Node *ancestor = root;
+
+                while (ancestor != current) {
+                    if (current->value < ancestor->value) {
+                        successor = ancestor;
+                        ancestor = ancestor->left;
+                    } else {
+                        ancestor = ancestor->right;
+                    }
+                }
+                current = successor;
+            }
+        }
+    };
+    Iterator begin() const {
+        return Iterator(root);
     }
 
-    Iterator end()  {
+    Iterator end() const {
         return Iterator(nullptr);
     }
+
 };
 
 #endif //LAB3_SEM3_BINARYTREE_H

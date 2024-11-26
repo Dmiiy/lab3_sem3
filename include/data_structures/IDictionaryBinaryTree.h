@@ -40,7 +40,7 @@ public:
 
     // Get value by key
     TValue Get(const TKey &key) const override {
-        auto node = tree.find(KeyValuePair(key, TValue()));
+        auto node = tree.findRef(KeyValuePair(key, TValue()));
         if (!node) {
             throw std::out_of_range("Key not found");
         }
@@ -49,7 +49,7 @@ public:
 
     // Get value by key (pointer)
     TValue& GetReference(const TKey &key) {
-        auto node = tree.find(KeyValuePair(key, TValue()));
+        auto node = tree.findRef(KeyValuePair(key, TValue()));
         if (!node) {
             throw std::out_of_range("Key not found");
         }
@@ -57,7 +57,7 @@ public:
     }
 
     const TValue& GetReference(const TKey &key) const {
-        auto node = tree.find(KeyValuePair(key, TValue()));
+        auto node = tree.findRef(KeyValuePair(key, TValue()));
         if (!node) {
             throw std::out_of_range("Key not found");
         }
@@ -65,7 +65,7 @@ public:
     }
     // Check if key exists
     bool ContainsKey(const TKey &key) const override {
-        return tree.find(KeyValuePair(key, TValue())) != nullptr;
+        return tree.find(KeyValuePair(key, TValue()));
     }
 
     // Add key-value pair

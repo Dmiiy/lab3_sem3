@@ -4,14 +4,14 @@
 #include <functional>
 #include <optional>
 #include <algorithm>
-#include "data_structures/IDictionaryBinaryTree.h"
+#include "../data_structures/IDictionaryBinaryTree.h"
 
-template <typename T, typename ClassType>
+template <typename T, typename ClassType, typename Class>
 class Histogram {
 public:
     using Range = std::pair<T, T>;
-    using Criteria = std::function<T(const T&)>;
-    using Classifier = std::function<ClassType(const T&)>;
+    using Criteria = std::function<T(const Class&)>;  // Changed from T& to Class&
+    using Classifier = std::function<ClassType(const Class&)>;
 
     struct Stats {
         int count = 0;
@@ -29,7 +29,7 @@ public:
         }
     };
 
-    Histogram(const ArraySequence<T>& sequence,
+    Histogram(const ArraySequence<Class>& sequence,  // Changed from T to Class
               const ArraySequence<Range>& ranges,
               Criteria criteria,
               Classifier classifier)
@@ -45,10 +45,11 @@ public:
     }
 
 private:
-    void buildHistogram(const ArraySequence<T>& sequence) {
+    void buildHistogram(const ArraySequence<Class>& sequence) {  // Changed from T to Class
         for (int i = 0; i < sequence.getLength(); ++i) {
-            T value = criteria(sequence[i]);
-            ClassType className = classifier(sequence[i]);
+            const Class& item = sequence[i];
+            T value = criteria(item);
+            ClassType className = classifier(item);
 
             auto rangeKeys = histogram.GetKeys();
             for (int j = 0; j < rangeKeys.getLength(); ++j) {

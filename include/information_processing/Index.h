@@ -5,8 +5,8 @@
 #include <stdexcept>
 #include <tuple>
 #include <optional>
-#include "sequence/ArraySequence.h"
-#include "data_structures/IDictionaryBinaryTree.h"
+#include "../sequence/ArraySequence.h"
+#include "../data_structures/IDictionaryBinaryTree.h"
 
 template <typename TValue, typename... TKeyParts>
 class CompositeIndexBuilder {
@@ -72,16 +72,22 @@ public:
     }
 
 private:
-    TKey createCompositeKey(const TValue& value) const {
-        return std::tuple<TKeyParts...>(std::get<std::function<TKeyParts(const TValue&)>>(keyExtractors)(value)...);
-    }
 
-    bool compareCompositeKeys(const TKey& key, const TKey& startKey, const TKey& endKey) const {
-        return compareKeys(key, startKey, endKey, std::make_index_sequence<sizeof...(TKeyParts)>{});
+    TKey createCompositeKey(const TValue& value) const {
+        return createCompositeKeyImpl(value, std::index_sequence_for<TKeyParts...>{});
     }
 
     template <std::size_t... I>
-    bool compareKeys(const TKey& key, const TKey& startKey, const TKey& endKey, std::index_sequence<I...>) const {
+    TKey createCompositeKeyImpl(const TValue& value, std::index_sequence<I...>) const {
+        return std::make_tuple(std::get<I>(keyExtractors)(value)...);
+    }
+
+    bool compareCompositeKeys(const TKey& key, const TKey& startKey, const TKey& endKey) const {
+        return compareCompositeKeysImpl(key, startKey, endKey, std::index_sequence_for<TKeyParts...>{});
+    }
+
+    template <std::size_t... I>
+    bool compareCompositeKeysImpl(const TKey& key, const TKey& startKey, const TKey& endKey, std::index_sequence<I...>) const {
         return (isWithinRange(std::get<I>(key), std::get<I>(startKey), std::get<I>(endKey)) && ...);
     }
 
@@ -89,5 +95,6 @@ private:
     bool isWithinRange(const T& value, const T& start, const T& end) const {
         return value >= start && value <= end;
     }
+
 };
 #endif //LAB3_SEM3_INDEX_H

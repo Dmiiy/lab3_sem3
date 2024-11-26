@@ -13,10 +13,10 @@ TEST(BinaryTree, InsertAndFind) {
     tree.insert(3);
     tree.insert(7);
 
-    ASSERT_NE(tree.find(5), nullptr);
-    ASSERT_NE(tree.find(3), nullptr);
-    ASSERT_NE(tree.find(7), nullptr);
-    ASSERT_EQ(tree.find(10), nullptr);
+    ASSERT_NE(tree.find(5), false);
+    ASSERT_NE(tree.find(3), false);
+    ASSERT_NE(tree.find(7), false);
+    ASSERT_EQ(tree.find(10), false);
 }
 
 TEST(BinaryTree, Remove) {
@@ -26,9 +26,9 @@ TEST(BinaryTree, Remove) {
     tree.insert(7);
     tree.remove(3);
 
-    ASSERT_EQ(tree.find(3), nullptr);
-    ASSERT_NE(tree.find(5), nullptr);
-    ASSERT_NE(tree.find(7), nullptr);
+    ASSERT_EQ(tree.find(3), false);
+    ASSERT_NE(tree.find(5), false);
+    ASSERT_NE(tree.find(7), false);
 }
 
 TEST(BinaryTree, Height) {
