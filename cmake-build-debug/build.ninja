@@ -161,22 +161,8 @@ build Google_tests/CMakeFiles/Google_Tests.dir/tests.cpp.obj: CXX_COMPILER__Goog
   OBJECT_DIR = Google_tests\CMakeFiles\Google_Tests.dir
   OBJECT_FILE_DIR = Google_tests\CMakeFiles\Google_Tests.dir
 
-build Google_tests/CMakeFiles/Google_Tests.dir/smrt_ptr_tests.cpp.obj: CXX_COMPILER__Google_Tests_unscanned_Debug C$:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/smrt_ptr_tests.cpp || cmake_object_order_depends_target_Google_Tests
-  DEP_FILE = Google_tests\CMakeFiles\Google_Tests.dir\smrt_ptr_tests.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -IC:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/include -isystem C:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/lib/googletest/include -isystem C:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/lib/googletest
-  OBJECT_DIR = Google_tests\CMakeFiles\Google_Tests.dir
-  OBJECT_FILE_DIR = Google_tests\CMakeFiles\Google_Tests.dir
-
 build Google_tests/CMakeFiles/Google_Tests.dir/array_sequence.cpp.obj: CXX_COMPILER__Google_Tests_unscanned_Debug C$:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/array_sequence.cpp || cmake_object_order_depends_target_Google_Tests
   DEP_FILE = Google_tests\CMakeFiles\Google_Tests.dir\array_sequence.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always
-  INCLUDES = -IC:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/include -isystem C:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/lib/googletest/include -isystem C:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/lib/googletest
-  OBJECT_DIR = Google_tests\CMakeFiles\Google_Tests.dir
-  OBJECT_FILE_DIR = Google_tests\CMakeFiles\Google_Tests.dir
-
-build Google_tests/CMakeFiles/Google_Tests.dir/sorters_tests.cpp.obj: CXX_COMPILER__Google_Tests_unscanned_Debug C$:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/sorters_tests.cpp || cmake_object_order_depends_target_Google_Tests
-  DEP_FILE = Google_tests\CMakeFiles\Google_Tests.dir\sorters_tests.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always
   INCLUDES = -IC:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/include -isystem C:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/lib/googletest/include -isystem C:/Users/dimak/CLionProjects/lab3_sem3/Google_tests/lib/googletest
   OBJECT_DIR = Google_tests\CMakeFiles\Google_Tests.dir
@@ -197,7 +183,7 @@ build Google_tests/CMakeFiles/Google_Tests.dir/data_structures_tests.cpp.obj: CX
 #############################################
 # Link the executable Google_tests\Google_Tests.exe
 
-build Google_tests/Google_Tests.exe: CXX_EXECUTABLE_LINKER__Google_Tests_Debug Google_tests/CMakeFiles/Google_Tests.dir/tests.cpp.obj Google_tests/CMakeFiles/Google_Tests.dir/smrt_ptr_tests.cpp.obj Google_tests/CMakeFiles/Google_Tests.dir/array_sequence.cpp.obj Google_tests/CMakeFiles/Google_Tests.dir/sorters_tests.cpp.obj Google_tests/CMakeFiles/Google_Tests.dir/data_structures_tests.cpp.obj | lib/libgtest.a lib/libgtest_main.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a
+build Google_tests/Google_Tests.exe: CXX_EXECUTABLE_LINKER__Google_Tests_Debug Google_tests/CMakeFiles/Google_Tests.dir/tests.cpp.obj Google_tests/CMakeFiles/Google_Tests.dir/array_sequence.cpp.obj Google_tests/CMakeFiles/Google_Tests.dir/data_structures_tests.cpp.obj | lib/libgtest.a lib/libgtest_main.a lib/libgtest.a || lib/libgtest.a lib/libgtest_main.a
   FLAGS = -g
   LINK_LIBRARIES = lib/libgtest.a  lib/libgtest_main.a  lib/libgtest.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = Google_tests\CMakeFiles\Google_Tests.dir

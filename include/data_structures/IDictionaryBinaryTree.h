@@ -2,7 +2,7 @@
 #define LAB3_SEM3_IDICTIONARYBINARYTREE_H
 
 #include <stdexcept>
-#include "BinaryTree.h"
+#include "AVLBinaryTree.h"
 #include "IDictionary.h"
 
 template <typename TKey, typename TValue>
@@ -32,7 +32,7 @@ class IDictionaryBinaryTree : public IDictionary<TKey, TValue> {
         }
     };
 
-    BinaryTree<KeyValuePair> tree;
+    AVLBinaryTree<KeyValuePair> tree;
 
 public:
     // Constructor
@@ -108,7 +108,7 @@ public:
     }
 
     class Iterator {
-        typename BinaryTree<KeyValuePair>::Iterator iterator;
+        typename AVLBinaryTree<KeyValuePair>::Iterator iterator;
     public:
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
@@ -116,14 +116,14 @@ public:
         using pointer = KeyValuePair*;
         using reference = KeyValuePair&;
 
-        explicit Iterator(typename BinaryTree<KeyValuePair>::Iterator it) : iterator(it) {}
+        explicit Iterator(typename AVLBinaryTree<KeyValuePair>::Iterator it) : iterator(it) {}
 
         reference operator*() const {
             return *iterator;
         }
 
         pointer operator->() {
-            return &(*iterator);
+            return iterator.operator->();
         }
 
         Iterator& operator++() {

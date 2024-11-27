@@ -1,14 +1,14 @@
-// Google_tests/data_structures_tests.cpp
-
 #include <gtest/gtest.h>
-#include "../include/data_structures/BinaryTree.h"
-#include "../include/data_structures/SetBinaryTree.h"
+#include "../include/data_structures/AVLBinaryTree.h"
+#include "../include/data_structures/ISetBinaryTree.h"
 #include "../include/data_structures/IDictionaryBinaryTree.h"
 #include "../include/data_structures/ISortedSequenceBinaryTree.h"
+#include "../include/information_processing/Index.h"
+#include "../include/information_processing/Histogram.h"
 
 
 TEST(BinaryTree, InsertAndFind) {
-    BinaryTree<int> tree;
+    AVLBinaryTree<int> tree;
     tree.insert(5);
     tree.insert(3);
     tree.insert(7);
@@ -20,7 +20,7 @@ TEST(BinaryTree, InsertAndFind) {
 }
 
 TEST(BinaryTree, Remove) {
-    BinaryTree<int> tree;
+    AVLBinaryTree<int> tree;
     tree.insert(5);
     tree.insert(3);
     tree.insert(7);
@@ -32,7 +32,7 @@ TEST(BinaryTree, Remove) {
 }
 
 TEST(BinaryTree, Height) {
-    BinaryTree<int> tree;
+    AVLBinaryTree<int> tree;
     tree.insert(5);
     tree.insert(3);
     tree.insert(7);
@@ -43,7 +43,7 @@ TEST(BinaryTree, Height) {
 }
 
 TEST(BinaryTree, Balance) {
-    BinaryTree<int> tree;
+    AVLBinaryTree<int> tree;
     tree.insert(5);
     tree.insert(3);
     tree.insert(7);
@@ -56,7 +56,7 @@ TEST(BinaryTree, Balance) {
 }
 
 TEST(BinaryTree, Iterator) {
-    BinaryTree<int> tree;
+    AVLBinaryTree<int> tree;
     tree.insert(5);
     tree.insert(3);
     tree.insert(7);
@@ -72,7 +72,7 @@ TEST(BinaryTree, Iterator) {
 
 
 TEST(SetBinaryTree, InsertAndFind) {
-    SetBinaryTree<int> set;
+    ISetBinaryTree<int> set;
     set.insert(5);
     set.insert(3);
     set.insert(7);
@@ -84,7 +84,7 @@ TEST(SetBinaryTree, InsertAndFind) {
 }
 
 TEST(SetBinaryTree, Erase) {
-    SetBinaryTree<int> set;
+    ISetBinaryTree<int> set;
     set.insert(5);
     set.insert(3);
     set.insert(7);
@@ -96,11 +96,11 @@ TEST(SetBinaryTree, Erase) {
 }
 
 TEST(SetBinaryTree, Union) {
-    SetBinaryTree<int> set1;
+    ISetBinaryTree<int> set1;
     set1.insert(1);
     set1.insert(2);
 
-    SetBinaryTree<int> set2;
+    ISetBinaryTree<int> set2;
     set2.insert(2);
     set2.insert(3);
 
@@ -113,11 +113,11 @@ TEST(SetBinaryTree, Union) {
 }
 
 TEST(SetBinaryTree, Intersection) {
-    SetBinaryTree<int> set1;
+    ISetBinaryTree<int> set1;
     set1.insert(1);
     set1.insert(2);
 
-    SetBinaryTree<int> set2;
+    ISetBinaryTree<int> set2;
     set2.insert(2);
     set2.insert(3);
 
@@ -130,11 +130,11 @@ TEST(SetBinaryTree, Intersection) {
 }
 
 TEST(SetBinaryTree, Difference) {
-    SetBinaryTree<int> set1;
+    ISetBinaryTree<int> set1;
     set1.insert(1);
     set1.insert(2);
 
-    SetBinaryTree<int> set2;
+    ISetBinaryTree<int> set2;
     set2.insert(2);
     set2.insert(3);
 
@@ -147,11 +147,11 @@ TEST(SetBinaryTree, Difference) {
 }
 
 TEST(SetBinaryTree, SubSet) {
-    SetBinaryTree<int> set1;
+    ISetBinaryTree<int> set1;
     set1.insert(1);
     set1.insert(2);
 
-    SetBinaryTree<int> set2;
+    ISetBinaryTree<int> set2;
     set2.insert(1);
     set2.insert(2);
     set2.insert(3);
@@ -161,11 +161,11 @@ TEST(SetBinaryTree, SubSet) {
 }
 
 TEST(SetBinaryTree, Equal) {
-    SetBinaryTree<int> set1;
+    ISetBinaryTree<int> set1;
     set1.insert(1);
     set1.insert(2);
 
-    SetBinaryTree<int> set2;
+    ISetBinaryTree<int> set2;
     set2.insert(1);
     set2.insert(2);
 

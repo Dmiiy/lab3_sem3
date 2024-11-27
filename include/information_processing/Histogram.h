@@ -6,12 +6,12 @@
 #include <algorithm>
 #include "../data_structures/IDictionaryBinaryTree.h"
 
-template <typename T, typename ClassType, typename Class>
+template <typename T, typename ClassReturn, typename Class>
 class Histogram {
 public:
     using Range = std::pair<T, T>;
-    using Criteria = std::function<T(const Class&)>;  // Changed from T& to Class&
-    using Classifier = std::function<ClassType(const Class&)>;
+    using Criteria = std::function<T(const Class&)>;
+    using Classifier = std::function<ClassReturn(const Class&)>;
 
     struct Stats {
         int count = 0;
@@ -29,27 +29,27 @@ public:
         }
     };
 
-    Histogram(const ArraySequence<Class>& sequence,  // Changed from T to Class
+    Histogram(const ArraySequence<Class>& sequence,
               const ArraySequence<Range>& ranges,
               Criteria criteria,
               Classifier classifier)
             : criteria(criteria), classifier(classifier) {
         for (int i = 0; i < ranges.getLength(); ++i) {
-            histogram.Add(ranges[i], IDictionaryBinaryTree<ClassType, Stats>());
+            histogram.Add(ranges[i], IDictionaryBinaryTree<ClassReturn, Stats>());
         }
         buildHistogram(sequence);
     }
 
-    const IDictionaryBinaryTree<Range, IDictionaryBinaryTree<ClassType, Stats>>& getHistogram() const {
+    const IDictionaryBinaryTree<Range, IDictionaryBinaryTree<ClassReturn, Stats>>& getHistogram() const {
         return histogram;
     }
 
 private:
-    void buildHistogram(const ArraySequence<Class>& sequence) {  // Changed from T to Class
+    void buildHistogram(const ArraySequence<Class>& sequence) {
         for (int i = 0; i < sequence.getLength(); ++i) {
             const Class& item = sequence[i];
             T value = criteria(item);
-            ClassType className = classifier(item);
+            ClassReturn className = classifier(item);
 
             auto rangeKeys = histogram.GetKeys();
             for (int j = 0; j < rangeKeys.getLength(); ++j) {
@@ -68,7 +68,7 @@ private:
 
     Criteria criteria;
     Classifier classifier;
-    IDictionaryBinaryTree<Range, IDictionaryBinaryTree<ClassType, Stats>> histogram;
+    IDictionaryBinaryTree<Range, IDictionaryBinaryTree<ClassReturn, Stats>> histogram;
 };
 
 #endif

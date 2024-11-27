@@ -9,14 +9,14 @@
 #include "../data_structures/IDictionaryBinaryTree.h"
 
 template <typename TValue, typename... TKeyParts>
-class CompositeIndexBuilder {
+class Index {
 private:
     using TKey = std::tuple<TKeyParts...>;
     IDictionaryBinaryTree<TKey, TValue> index;
     std::tuple<std::function<TKeyParts(const TValue&)>...> keyExtractors;
 
 public:
-    CompositeIndexBuilder(
+    Index(
             const ArraySequence<TValue>& data,
             std::tuple<std::function<TKeyParts(const TValue&)>...> keyExtractors)
     : keyExtractors(std::move(keyExtractors)) {

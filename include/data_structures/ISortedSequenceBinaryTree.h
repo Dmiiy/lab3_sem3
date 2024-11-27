@@ -4,12 +4,12 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-#include "BinaryTree.h"
+#include "AVLBinaryTree.h"
 #include "ISortedSequence.h"
 
 template <typename TElement>
 class ISortedSequenceBinaryTree : public ISortedSequence<TElement> {
-    BinaryTree<TElement> tree;
+    AVLBinaryTree<TElement> tree;
 
 public:
     // Constructor
@@ -83,7 +83,7 @@ public:
     }
 
     class Iterator {
-        typename BinaryTree<TElement>::Iterator iterator;
+        typename AVLBinaryTree<TElement>::Iterator iterator;
     public:
         using iterator_category = std::forward_iterator_tag;
         using difference_type = std::ptrdiff_t;
@@ -91,14 +91,14 @@ public:
         using pointer = TElement*;
         using reference = TElement&;
 
-        explicit Iterator(typename BinaryTree<TElement>::Iterator it) : iterator(it) {}
+        explicit Iterator(typename AVLBinaryTree<TElement>::Iterator it) : iterator(it) {}
 
         reference operator*() const {
             return *iterator;
         }
 
         pointer operator->() {
-            return &(*iterator);
+            return iterator.operator->();
         }
 
         Iterator& operator++() {
