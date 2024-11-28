@@ -54,12 +54,21 @@ private:
             auto rangeKeys = histogram.GetKeys();
             for (int j = 0; j < rangeKeys.getLength(); ++j) {
                 const auto& range = rangeKeys[j];
+
                 if (value >= range.first && value < range.second) {
+                    if (!histogram.ContainsKey(range)) {
+                        throw std::logic_error("Range not found in histogram");
+                    }
+
                     auto& classStats = histogram.GetReference(range);
                     if (!classStats.ContainsKey(className)) {
                         classStats.Add(className, Stats{});
                     }
-                    classStats.GetReference(className).update(value);
+
+                    // Обновляем статистику
+                    auto& stats = classStats.GetReference(className);
+                    stats.update(value);
+
                     break;
                 }
             }

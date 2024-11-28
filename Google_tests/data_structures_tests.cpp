@@ -280,3 +280,277 @@ TEST(ISortedSequenceBinaryTree, IsEmptyAndGetLength) {
     ASSERT_FALSE(seq.IsEmpty());
     ASSERT_EQ(seq.GetLength(), 1);
 }
+
+struct TestDataHistogram {
+    int value;        // Числовое значение, которое используется для классификации по диапазонам
+    std::string category; // Категория для классификации
+};
+
+// Тест на распределение элементов по диапазонам
+TEST(HistogramTest, DistributionAcrossRanges) {
+    ArraySequence<TestDataHistogram> data;
+    data.append({5, "A"});
+    data.append({10, "B"});
+    data.append({15, "A"});
+    data.append({20, "C"});
+    data.append({25, "A"});
+
+    ArraySequence<std::pair<int, int>> ranges;
+    ranges.append({0,10});
+    ranges.append({10,20});
+    ranges.append({20,30});
+    auto criteria = [](const TestDataHistogram& item) { return item.value; };
+    auto classifier = [](const TestDataHistogram& item) { return item.category; };
+
+    Histogram<int, std::string, TestDataHistogram> histogram(data, ranges, criteria, classifier);
+
+    const auto& result = histogram.getHistogram();
+
+    // Проверка диапазонов
+    ASSERT_TRUE(result.ContainsKey({0, 10}));
+    ASSERT_TRUE(result.ContainsKey({10, 20}));
+    ASSERT_TRUE(result.ContainsKey({20, 30}));
+
+    // Проверка диапазона {0, 10}
+    const auto& range1 = result.GetReference({0, 10});
+    ASSERT_TRUE(range1.ContainsKey("A"));
+    const auto& statsA1 = range1.GetReference("A");
+    ASSERT_EQ(statsA1.count, 1);
+    ASSERT_EQ(statsA1.sum, 5);
+    ASSERT_TRUE(statsA1.min.has_value());
+    ASSERT_EQ(statsA1.min.value(), 5);
+    ASSERT_TRUE(statsA1.max.has_value());
+    ASSERT_EQ(statsA1.max.value(), 5);
+
+    // Проверка диапазона {10, 20}
+    const auto& range2 = result.GetReference({10, 20});
+    ASSERT_TRUE(range2.ContainsKey("A"));
+    ASSERT_TRUE(range2.ContainsKey("B"));
+    const auto& statsA2 = range2.GetReference("A");
+    const auto& statsB2 = range2.GetReference("B");
+
+    ASSERT_EQ(statsA2.count, 1);
+    ASSERT_EQ(statsA2.sum, 15);
+    ASSERT_EQ(statsB2.count, 1);
+    ASSERT_EQ(statsB2.sum, 10);
+
+    // Проверка диапазона {20, 30}
+    const auto& range3 = result.GetReference({20, 30});
+    ASSERT_TRUE(range3.ContainsKey("A"));
+    ASSERT_TRUE(range3.ContainsKey("C"));
+    const auto& statsA3 = range3.GetReference("A");
+    const auto& statsC3 = range3.GetReference("C");
+
+    ASSERT_EQ(statsA3.count, 1);
+    ASSERT_EQ(statsA3.sum, 25);
+    ASSERT_EQ(statsC3.count, 1);
+    ASSERT_EQ(statsC3.sum, 20);
+}
+
+// Тест на обработку пустой последовательности
+TEST(HistogramTest, EmptySequence) {
+    ArraySequence<TestDataHistogram> data;
+
+    ArraySequence<std::pair<int, int>> ranges;
+    ranges.append({0,10});
+    ranges.append({10,20});
+    ranges.append({20,30});
+
+    auto criteria = [](const TestDataHistogram& item) { return item.value; };
+    auto classifier = [](const TestDataHistogram& item) { return item.category; };
+
+    Histogram<int, std::string, TestDataHistogram> histogram(data, ranges, criteria, classifier);
+
+    const auto& result = histogram.getHistogram();
+
+    // Проверяем, что диапазоны существуют, но пустые
+    ASSERT_TRUE(result.ContainsKey({0, 10}));
+    ASSERT_TRUE(result.ContainsKey({10, 20}));
+    ASSERT_TRUE(result.ContainsKey({20, 30}));
+
+    const auto& range1 = result.GetReference({0, 10});
+    ASSERT_EQ(range1.GetCount(), 0);
+
+    const auto& range2 = result.GetReference({10, 20});
+    ASSERT_EQ(range2.GetCount(), 0);
+
+    const auto& range3 = result.GetReference({20, 30});
+    ASSERT_EQ(range3.GetCount(), 0);
+}
+
+// Тест на граничные значения
+TEST(HistogramTest, BoundaryValues) {
+    ArraySequence<TestDataHistogram> data;
+    data.append({0, "A"});
+    data.append({9, "B"});
+    data.append({10, "A"});
+    data.append({19, "C"});
+    data.append({20, "B"});
+    data.append({29, "A"});
+
+    ArraySequence<std::pair<int, int>> ranges;
+    ranges.append({0,10});
+    ranges.append({10,20});
+    ranges.append({20,30});
+
+    auto criteria = [](const TestDataHistogram& item) { return item.value; };
+    auto classifier = [](const TestDataHistogram& item) { return item.category; };
+
+    Histogram<int, std::string, TestDataHistogram> histogram(data, ranges, criteria, classifier);
+
+    const auto& result = histogram.getHistogram();
+
+    // Проверяем распределение граничных значений
+    const auto& range1 = result.GetReference({0, 10});
+    ASSERT_TRUE(range1.ContainsKey("A"));
+    ASSERT_TRUE(range1.ContainsKey("B"));
+    ASSERT_EQ(range1.GetReference("A").count, 1);
+    ASSERT_EQ(range1.GetReference("B").count, 1);
+
+    const auto& range2 = result.GetReference({10, 20});
+    ASSERT_TRUE(range2.ContainsKey("A"));
+    ASSERT_TRUE(range2.ContainsKey("C"));
+    ASSERT_EQ(range2.GetReference("A").count, 1);
+    ASSERT_EQ(range2.GetReference("C").count, 1);
+
+    const auto& range3 = result.GetReference({20, 30});
+    ASSERT_TRUE(range3.ContainsKey("A"));
+    ASSERT_TRUE(range3.ContainsKey("B"));
+    ASSERT_EQ(range3.GetReference("A").count, 1);
+    ASSERT_EQ(range3.GetReference("B").count, 1);
+}
+
+// Структура для тестовых данных
+struct TestData {
+    int id;               // Уникальный идентификатор
+    std::string category; // Категория
+    int value;            // Значение
+};
+
+// Тесты для `Index`
+TEST(IndexTest, BasicAddAndSearch) {
+    ArraySequence<TestData> data;
+    data.append({1, "A", 10});
+    data.append({2, "B", 20});
+    data.append({3, "A", 30});
+
+    // Определяем ключ как кортеж (id, категория)
+    auto keyExtractors = std::make_tuple(
+            [](const TestData& item) { return item.id; },
+            [](const TestData& item) { return item.category; }
+    );
+
+    Index<TestData, int, std::string> index(data, keyExtractors);
+
+    // Проверяем поиск существующих элементов
+    auto result1 = index.Search(std::make_tuple(1, "A"));
+    ASSERT_TRUE(result1.has_value());
+    ASSERT_EQ(result1->value, 10);
+
+    auto result2 = index.Search(std::make_tuple(3, "A"));
+    ASSERT_TRUE(result2.has_value());
+    ASSERT_EQ(result2->value, 30);
+
+    // Проверяем поиск несуществующего элемента
+    auto result3 = index.Search(std::make_tuple(4, "B"));
+    ASSERT_FALSE(result3.has_value());
+}
+
+TEST(IndexTest, AddDuplicateKeyThrows) {
+    ArraySequence<TestData> data;
+    data.append({1, "A", 10});
+    data.append({2, "B", 20});
+
+    auto keyExtractors = std::make_tuple(
+            [](const TestData& item) { return item.id; },
+            [](const TestData& item) { return item.category; }
+    );
+
+    Index<TestData, int, std::string> index(data, keyExtractors);
+
+    // Добавляем элемент с уникальным ключом
+    index.Add({3, "C", 30});
+
+    // Попытка добавить элемент с уже существующим ключом
+    ASSERT_THROW(index.Add({1, "A", 40}), std::invalid_argument);
+}
+
+TEST(IndexTest, RemoveAndSearch) {
+    ArraySequence<TestData> data;
+    data.append({1, "A", 10});
+    data.append({2, "B", 20});
+    data.append({3, "A", 30});
+
+    auto keyExtractors = std::make_tuple(
+            [](const TestData& item) { return item.id; },
+            [](const TestData& item) { return item.category; }
+    );
+
+    Index<TestData, int, std::string> index(data, keyExtractors);
+
+    // Удаляем элемент
+    index.Remove(std::make_tuple(2, "B"));
+
+    // Проверяем, что удаленный элемент больше не находится
+    auto result = index.Search(std::make_tuple(2, "B"));
+    ASSERT_FALSE(result.has_value());
+
+    // Проверяем, что другие элементы остались
+    ASSERT_TRUE(index.Search(std::make_tuple(1, "A")).has_value());
+    ASSERT_TRUE(index.Search(std::make_tuple(3, "A")).has_value());
+}
+
+TEST(IndexTest, SearchRange) {
+    ArraySequence<TestData> data;
+    data.append({1, "A", 10});
+    data.append({2, "B", 20});
+    data.append({3, "A", 30});
+    data.append({4, "C", 40});
+    data.append({5, "A", 50});
+
+    auto keyExtractors = std::make_tuple(
+            [](const TestData& item) { return item.id; },
+            [](const TestData& item) { return item.category; }
+    );
+
+    Index<TestData, int, std::string> index(data, keyExtractors);
+
+    // Поиск по диапазону ключей
+    auto rangeResult = index.SearchRange(std::make_tuple(2, "A"), std::make_tuple(4, "C"));
+
+    ASSERT_EQ(rangeResult.GetCount(), 3);
+
+    auto keys = rangeResult.GetKeys();
+    ASSERT_EQ(keys[0], std::make_tuple(2, "B"));
+    ASSERT_EQ(keys[1], std::make_tuple(3, "A"));
+    ASSERT_EQ(keys[2], std::make_tuple(4, "C"));
+}
+
+TEST(IndexTest, GetAllKeysAndValues) {
+    ArraySequence<TestData> data;
+    data.append({1, "A", 10});
+    data.append({2, "B", 20});
+    data.append({3, "A", 30});
+
+    auto keyExtractors = std::make_tuple(
+            [](const TestData& item) { return item.id; },
+            [](const TestData& item) { return item.category; }
+    );
+
+    Index<TestData, int, std::string> index(data, keyExtractors);
+
+    auto allKeys = index.GetAllKeys();
+    auto allValues = index.GetAllValues();
+
+    ASSERT_EQ(allKeys.getLength(), 3);
+    ASSERT_EQ(allValues.getLength(), 3);
+
+    ASSERT_EQ(allKeys[0], std::make_tuple(1, "A"));
+    ASSERT_EQ(allKeys[1], std::make_tuple(2, "B"));
+    ASSERT_EQ(allKeys[2], std::make_tuple(3, "A"));
+
+    ASSERT_EQ(allValues[0].value, 10);
+    ASSERT_EQ(allValues[1].value, 20);
+    ASSERT_EQ(allValues[2].value, 30);
+}
+

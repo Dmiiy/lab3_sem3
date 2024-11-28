@@ -327,12 +327,6 @@ public:
         LNR(root, td);
         first = td.first;
     }
-    void threadLNR() const {
-        first = nullptr;
-        Thread td;
-        LNR(root, td);
-        first = td.first;
-    }
 
     void printThreaded() const {
         Node *current = first;
